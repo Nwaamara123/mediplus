@@ -22,17 +22,10 @@ jobs:
 
       - name: Login to Amazon ECR
         run: |
-          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} \
-            | docker login --username AWS \
-              --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 299372338272.dkr.ecr.us-east-1.amazonaws.com
 
       - name: Build, tag, and push image to Amazon ECR
-        env:
-          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          GITHUB_RUN_NUMBER: ${{ github.run_number }}
         run: |
-          IMAGE_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/mediplus:${GITHUB_RUN_NUMBER}
-          echo "Building image: $IMAGE_URI"
-          docker build -t $IMAGE_URI .
-          docker push $IMAGE_URI
+          docker build -t mediplus .
+          docker tag mediplus:v1 299372338272.dkr.ecr.us-east-1.amazonaws.com/mediplus:v1
+          docker push 299372338272.dkr.ecr.us-east-1.amazonaws.com/mediplus:v1
